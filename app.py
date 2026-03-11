@@ -30,3 +30,23 @@ def generar_pdf():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
+@app.route("/texto")
+def texto():
+    return render_template("texto.html")
+
+
+@app.route("/texto-pdf", methods=["POST"])
+def texto_pdf():
+    texto = request.form["texto"]
+
+    buffer = io.BytesIO()
+    pdf = canvas.Canvas(buffer)
+
+    pdf.drawString(100, 750, texto)
+
+    pdf.save()
+
+    buffer.seek(0)
+
+    return send_file(buffer, as_attachment=True, download_name="texto.pdf")
