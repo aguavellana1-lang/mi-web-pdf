@@ -1,28 +1,78 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Generador de PDF Gratis Online</title>
-<meta name="description" content="Crea documentos PDF gratis online. Genera documentos personalizados en segundos.">
+<title>Generador de PDF Gratis</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+font-family: Arial, sans-serif;
+background: linear-gradient(135deg,#4facfe,#00f2fe);
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.container{
+background:white;
+padding:40px;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+width:350px;
+text-align:center;
+}
+
+h1{
+margin-bottom:20px;
+}
+
+input, textarea{
+width:100%;
+padding:10px;
+margin:10px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+background:#4facfe;
+color:white;
+font-size:16px;
+border-radius:6px;
+cursor:pointer;
+}
+
+button:hover{
+background:#3a8de0;
+}
+</style>
+
 </head>
 
 <body>
 
-<h1>Generador de PDF Gratis</h1>
+<div class="container">
 
-<form action="/generar" method="post">
+<h1>Generador de PDF</h1>
 
-<label>Nombre</label><br>
-<input type="text" name="nombre" required><br><br>
+<form action="/generar" method="POST">
 
-<label>Empresa</label><br>
-<input type="text" name="empresa"><br><br>
+<input type="text" name="nombre" placeholder="Tu nombre" required>
 
-<label>Mensaje</label><br>
-<textarea name="mensaje"></textarea><br><br>
+<input type="text" name="empresa" placeholder="Empresa">
+
+<textarea name="mensaje" placeholder="Escribe tu mensaje"></textarea>
 
 <button type="submit">Generar PDF</button>
 
 </form>
+
+</div>
 
 </body>
 </html>
