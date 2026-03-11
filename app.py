@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
 @app.route("/texto")
 def texto():
-    return render_template("texto.html")
+    return render_template("texto_pdf.html")
 
 
 @app.route("/texto-pdf", methods=["POST"])
@@ -49,4 +49,5 @@ def texto_pdf():
 
     buffer.seek(0)
 
-    return send_file(buffer, as_attachment=True, download_name="texto.pdf")
+    return send_file(buffer, as_attachment=True, download_name="texto_pdf.html")
+
