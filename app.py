@@ -119,7 +119,7 @@ def generar_notas():
     return send_file(buffer, as_attachment=True, download_name="notas.pdf", mimetype="application/pdf")
 
 
-# LISTA DE TAREAS PDF
+# TAREAS PDF
 @app.route("/tareas")
 def tareas():
     return render_template("tareas.html")
@@ -141,6 +141,36 @@ def generar_tareas():
     buffer.seek(0)
 
     return send_file(buffer, as_attachment=True, download_name="tareas.pdf", mimetype="application/pdf")
+
+
+# AGENDA PDF
+@app.route("/agenda")
+def agenda():
+    return render_template("agenda.html")
+
+@app.route("/generar_agenda", methods=["POST"])
+def generar_agenda():
+
+    titulo = request.form["titulo"]
+    contenido = request.form["contenido"]
+
+    buffer = io.BytesIO()
+    pdf = canvas.Canvas(buffer)
+
+    pdf.setFont("Helvetica-Bold",18)
+    pdf.drawString(100,750,titulo)
+
+    pdf.setFont("Helvetica",12)
+
+    y = 700
+    for linea in contenido.split("\n"):
+        pdf.drawString(100,y,linea)
+        y -= 20
+
+    pdf.save()
+    buffer.seek(0)
+
+    return send_file(buffer, as_attachment=True, download_name="agenda.pdf", mimetype="application/pdf")
 
 
 if __name__ == "__main__":
