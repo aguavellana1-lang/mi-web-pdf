@@ -1,16 +1,18 @@
 from flask import Flask, render_template, request, send_file
 from reportlab.pdfgen import canvas
 import io
+from PIL import Image
+from PyPDF2 import PdfMerger, PdfReader, PdfWriter
 
 app = Flask(__name__)
 
-# INICIO
+# HOME
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-# TEXTO PDF
+# TEXTO → PDF
 @app.route("/texto")
 def texto():
     return render_template("texto_pdf.html")
@@ -34,143 +36,114 @@ def generar_pdf():
     return send_file(buffer, as_attachment=True, download_name="texto.pdf", mimetype="application/pdf")
 
 
-# CV PDF
+# CV
 @app.route("/cv")
 def cv():
     return render_template("cv.html")
 
-@app.route("/generar_cv", methods=["POST"])
-def generar_cv():
 
-    nombre = request.form["nombre"]
-    email = request.form["email"]
-    experiencia = request.form["experiencia"]
-
-    buffer = io.BytesIO()
-    pdf = canvas.Canvas(buffer)
-
-    pdf.setFont("Helvetica-Bold",18)
-    pdf.drawString(100,750,nombre)
-
-    pdf.setFont("Helvetica",12)
-    pdf.drawString(100,710,f"Email: {email}")
-
-    y = 670
-    for linea in experiencia.split("\n"):
-        pdf.drawString(100,y,linea)
-        y -= 20
-
-    pdf.save()
-    buffer.seek(0)
-
-    return send_file(buffer, as_attachment=True, download_name="cv.pdf", mimetype="application/pdf")
-
-
-# FACTURA PDF
+# FACTURA
 @app.route("/factura")
 def factura():
     return render_template("factura.html")
 
-@app.route("/generar_factura", methods=["POST"])
-def generar_factura():
 
-    cliente = request.form["cliente"]
-    producto = request.form["producto"]
-    precio = request.form["precio"]
-
-    buffer = io.BytesIO()
-    pdf = canvas.Canvas(buffer)
-
-    pdf.setFont("Helvetica-Bold",18)
-    pdf.drawString(100,750,"Factura")
-
-    pdf.setFont("Helvetica",12)
-    pdf.drawString(100,710,f"Cliente: {cliente}")
-    pdf.drawString(100,680,f"Producto: {producto}")
-    pdf.drawString(100,650,f"Precio: {precio}")
-
-    pdf.save()
-    buffer.seek(0)
-
-    return send_file(buffer, as_attachment=True, download_name="factura.pdf", mimetype="application/pdf")
-
-
-# NOTAS PDF
+# NOTAS
 @app.route("/notas")
 def notas():
     return render_template("notas.html")
 
-@app.route("/generar_notas", methods=["POST"])
-def generar_notas():
 
-    nota = request.form["nota"]
-
-    buffer = io.BytesIO()
-    pdf = canvas.Canvas(buffer)
-
-    y = 750
-    for linea in nota.split("\n"):
-        pdf.drawString(100,y,linea)
-        y -= 20
-
-    pdf.save()
-    buffer.seek(0)
-
-    return send_file(buffer, as_attachment=True, download_name="notas.pdf", mimetype="application/pdf")
-
-
-# TAREAS PDF
+# TAREAS
 @app.route("/tareas")
 def tareas():
     return render_template("tareas.html")
 
-@app.route("/generar_tareas", methods=["POST"])
-def generar_tareas():
 
-    tareas = request.form["tareas"]
-
-    buffer = io.BytesIO()
-    pdf = canvas.Canvas(buffer)
-
-    y = 750
-    for linea in tareas.split("\n"):
-        pdf.drawString(100,y,"• "+linea)
-        y -= 20
-
-    pdf.save()
-    buffer.seek(0)
-
-    return send_file(buffer, as_attachment=True, download_name="tareas.pdf", mimetype="application/pdf")
-
-
-# AGENDA PDF
+# AGENDA
 @app.route("/agenda")
 def agenda():
     return render_template("agenda.html")
 
-@app.route("/generar_agenda", methods=["POST"])
-def generar_agenda():
 
-    titulo = request.form["titulo"]
-    contenido = request.form["contenido"]
+# UNIR PDF
+@app.route("/unir-pdf")
+def unir_pdf():
+    return render_template("unir_pdf.html")
+
+@app.route("/procesar_unir_pdf", methods=["POST"])
+def procesar_unir_pdf():
+
+    archivos = request.files.getlist("pdfs")
+
+    merger = PdfMerger()
+
+    for archivo in archivos:
+        merger.append(archivo)
 
     buffer = io.BytesIO()
-    pdf = canvas.Canvas(buffer)
+    merger.write(buffer)
+    merger.close()
 
-    pdf.setFont("Helvetica-Bold",18)
-    pdf.drawString(100,750,titulo)
-
-    pdf.setFont("Helvetica",12)
-
-    y = 700
-    for linea in contenido.split("\n"):
-        pdf.drawString(100,y,linea)
-        y -= 20
-
-    pdf.save()
     buffer.seek(0)
 
-    return send_file(buffer, as_attachment=True, download_name="agenda.pdf", mimetype="application/pdf")
+    return send_file(buffer, as_attachment=True, download_name="unidos.pdf", mimetype="application/pdf")
+
+
+# DIVIDIR PDF
+@app.route("/dividir-pdf")
+def dividir_pdf():
+    return render_template("dividir_pdf.html")
+
+@app.route("/procesar_dividir_pdf", methods=["POST"])
+def procesar_dividir_pdf():
+
+    archivo = request.files["pdf"]
+
+    reader = PdfReader(archivo)
+    writer = PdfWriter()
+
+    writer.add_page(reader.pages[0])
+
+    buffer = io.BytesIO()
+    writer.write(buffer)
+
+    buffer.seek(0)
+
+    return send_file(buffer, as_attachment=True, download_name="pagina1.pdf", mimetype="application/pdf")
+
+
+# IMAGEN → PDF
+@app.route("/imagen-a-pdf")
+def imagen_a_pdf():
+    return render_template("imagen_pdf.html")
+
+@app.route("/procesar_imagen_pdf", methods=["POST"])
+def procesar_imagen_pdf():
+
+    imagen = request.files["imagen"]
+
+    img = Image.open(imagen)
+
+    buffer = io.BytesIO()
+    img.convert("RGB").save(buffer, format="PDF")
+
+    buffer.seek(0)
+
+    return send_file(buffer, as_attachment=True, download_name="imagen.pdf", mimetype="application/pdf")
+
+
+# PDF → IMAGEN (simulado simple)
+@app.route("/pdf-a-imagen")
+def pdf_a_imagen():
+    return render_template("pdf_imagen.html")
+
+@app.route("/procesar_pdf_imagen", methods=["POST"])
+def procesar_pdf_imagen():
+
+    pdf = request.files["pdf"]
+
+    return "Herramienta en desarrollo"
 
 
 if __name__ == "__main__":
