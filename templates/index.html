@@ -1,67 +1,58 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="es">
 <head>
-<title>Generador de PDF Gratis Online | Crear PDF Fácil</title>
+<meta charset="UTF-8">
+<title>Generador de PDF Gratis | Crear PDF Online</title>
 
-<meta name="description" content="Generador de PDF gratis online. Crea documentos PDF rápidamente sin registrarte.">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Herramienta gratuita para crear PDFs online. Convierte texto a PDF, crea tu CV en PDF y más herramientas útiles.">
 
 <style>
 body{
-font-family: Arial, sans-serif;
-background: linear-gradient(135deg,#4facfe,#00f2fe);
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-margin:0;
+font-family: Arial;
+background:#f4f6f8;
+text-align:center;
+padding:40px;
 }
 
 .container{
 background:white;
-padding:40px;
-border-radius:12px;
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
-width:350px;
-text-align:center;
+padding:30px;
+border-radius:10px;
+max-width:600px;
+margin:auto;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
 }
 
 h1{
-margin-bottom:10px;
+color:#333;
 }
 
-p{
-color:#555;
-font-size:14px;
-margin-bottom:20px;
+h2{
+margin-top:30px;
 }
 
-input, textarea{
-width:100%;
-padding:10px;
-margin:10px 0;
-border-radius:6px;
-border:1px solid #ccc;
+ul{
+list-style:none;
+padding:0;
 }
 
-button{
-width:100%;
-padding:12px;
-border:none;
-background:#4facfe;
+li{
+margin:15px 0;
+}
+
+a{
+text-decoration:none;
+background:#007BFF;
 color:white;
-font-size:16px;
+padding:10px 20px;
 border-radius:6px;
-cursor:pointer;
+display:inline-block;
 }
 
-button:hover{
-background:#3a8de0;
+a:hover{
+background:#0056b3;
 }
 </style>
-
 </head>
 
 <body>
@@ -70,27 +61,16 @@ background:#3a8de0;
 
 <h1>Generador de PDF Gratis</h1>
 
-<div style="margin-bottom:20px;">
-<a href="/">Inicio</a>
-<a href="/texto">Texto a PDF</a>
-</div>
+<p>Crea documentos PDF online de forma rápida y gratuita.</p>
 
-<p>Crea documentos PDF gratis online. Nuestro generador permite crear PDFs rápidamente desde texto o formularios.</p>
+<h2>Herramientas disponibles</h2>
 
-<form action="/generar" method="POST">
-
-<input type="text" name="nombre" placeholder="Tu nombre" required>
-
-<input type="text" name="empresa" placeholder="Empresa">
-
-<textarea name="mensaje" placeholder="Escribe tu mensaje"></textarea>
-
-<button type="submit">Generar PDF</button>
-
-</form>
+<ul>
+<li><a href="/texto">Convertir texto a PDF</a></li>
+<li><a href="/cv">Crear CV en PDF</a></li>
+</ul>
 
 </div>
 
 </body>
-
 </html>
