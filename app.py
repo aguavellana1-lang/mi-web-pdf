@@ -4,17 +4,16 @@ import io
 
 app = Flask(__name__)
 
-# PAGINA PRINCIPAL
+# INICIO
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-# TEXTO A PDF
+# TEXTO PDF
 @app.route("/texto")
 def texto():
     return render_template("texto_pdf.html")
-
 
 @app.route("/generar_pdf", methods=["POST"])
 def generar_pdf():
@@ -32,19 +31,13 @@ def generar_pdf():
     pdf.save()
     buffer.seek(0)
 
-    return send_file(
-        buffer,
-        as_attachment=True,
-        download_name="texto.pdf",
-        mimetype="application/pdf"
-    )
+    return send_file(buffer, as_attachment=True, download_name="texto.pdf", mimetype="application/pdf")
 
 
-# CV A PDF
+# CV PDF
 @app.route("/cv")
 def cv():
     return render_template("cv.html")
-
 
 @app.route("/generar_cv", methods=["POST"])
 def generar_cv():
@@ -56,33 +49,27 @@ def generar_cv():
     buffer = io.BytesIO()
     pdf = canvas.Canvas(buffer)
 
-    pdf.setFont("Helvetica-Bold", 18)
-    pdf.drawString(100, 750, nombre)
+    pdf.setFont("Helvetica-Bold",18)
+    pdf.drawString(100,750,nombre)
 
-    pdf.setFont("Helvetica", 12)
-    pdf.drawString(100, 710, f"Email: {email}")
+    pdf.setFont("Helvetica",12)
+    pdf.drawString(100,710,f"Email: {email}")
 
     y = 670
     for linea in experiencia.split("\n"):
-        pdf.drawString(100, y, linea)
+        pdf.drawString(100,y,linea)
         y -= 20
 
     pdf.save()
     buffer.seek(0)
 
-    return send_file(
-        buffer,
-        as_attachment=True,
-        download_name="cv.pdf",
-        mimetype="application/pdf"
-    )
+    return send_file(buffer, as_attachment=True, download_name="cv.pdf", mimetype="application/pdf")
 
 
 # FACTURA PDF
 @app.route("/factura")
 def factura():
     return render_template("factura.html")
-
 
 @app.route("/generar_factura", methods=["POST"])
 def generar_factura():
@@ -94,30 +81,24 @@ def generar_factura():
     buffer = io.BytesIO()
     pdf = canvas.Canvas(buffer)
 
-    pdf.setFont("Helvetica-Bold", 18)
-    pdf.drawString(100, 750, "Factura")
+    pdf.setFont("Helvetica-Bold",18)
+    pdf.drawString(100,750,"Factura")
 
-    pdf.setFont("Helvetica", 12)
-    pdf.drawString(100, 710, f"Cliente: {cliente}")
-    pdf.drawString(100, 680, f"Producto: {producto}")
-    pdf.drawString(100, 650, f"Precio: {precio}")
+    pdf.setFont("Helvetica",12)
+    pdf.drawString(100,710,f"Cliente: {cliente}")
+    pdf.drawString(100,680,f"Producto: {producto}")
+    pdf.drawString(100,650,f"Precio: {precio}")
 
     pdf.save()
     buffer.seek(0)
 
-    return send_file(
-        buffer,
-        as_attachment=True,
-        download_name="factura.pdf",
-        mimetype="application/pdf"
-    )
+    return send_file(buffer, as_attachment=True, download_name="factura.pdf", mimetype="application/pdf")
 
 
-# NOTAS A PDF
+# NOTAS PDF
 @app.route("/notas")
 def notas():
     return render_template("notas.html")
-
 
 @app.route("/generar_notas", methods=["POST"])
 def generar_notas():
@@ -129,18 +110,37 @@ def generar_notas():
 
     y = 750
     for linea in nota.split("\n"):
-        pdf.drawString(100, y, linea)
+        pdf.drawString(100,y,linea)
         y -= 20
 
     pdf.save()
     buffer.seek(0)
 
-    return send_file(
-        buffer,
-        as_attachment=True,
-        download_name="notas.pdf",
-        mimetype="application/pdf"
-    )
+    return send_file(buffer, as_attachment=True, download_name="notas.pdf", mimetype="application/pdf")
+
+
+# LISTA DE TAREAS PDF
+@app.route("/tareas")
+def tareas():
+    return render_template("tareas.html")
+
+@app.route("/generar_tareas", methods=["POST"])
+def generar_tareas():
+
+    tareas = request.form["tareas"]
+
+    buffer = io.BytesIO()
+    pdf = canvas.Canvas(buffer)
+
+    y = 750
+    for linea in tareas.split("\n"):
+        pdf.drawString(100,y,"• "+linea)
+        y -= 20
+
+    pdf.save()
+    buffer.seek(0)
+
+    return send_file(buffer, as_attachment=True, download_name="tareas.pdf", mimetype="application/pdf")
 
 
 if __name__ == "__main__":
