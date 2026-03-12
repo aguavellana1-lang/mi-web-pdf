@@ -40,7 +40,7 @@ def generar_pdf():
     )
 
 
-# CV EN PDF
+# CV A PDF
 @app.route("/cv")
 def cv():
     return render_template("cv.html")
@@ -78,7 +78,7 @@ def generar_cv():
     )
 
 
-# FACTURA EN PDF
+# FACTURA PDF
 @app.route("/factura")
 def factura():
     return render_template("factura.html")
@@ -109,6 +109,36 @@ def generar_factura():
         buffer,
         as_attachment=True,
         download_name="factura.pdf",
+        mimetype="application/pdf"
+    )
+
+
+# NOTAS A PDF
+@app.route("/notas")
+def notas():
+    return render_template("notas.html")
+
+
+@app.route("/generar_notas", methods=["POST"])
+def generar_notas():
+
+    nota = request.form["nota"]
+
+    buffer = io.BytesIO()
+    pdf = canvas.Canvas(buffer)
+
+    y = 750
+    for linea in nota.split("\n"):
+        pdf.drawString(100, y, linea)
+        y -= 20
+
+    pdf.save()
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="notas.pdf",
         mimetype="application/pdf"
     )
 
