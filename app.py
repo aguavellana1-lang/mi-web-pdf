@@ -57,5 +57,52 @@ def texto_pdf():
     return send_file(buffer, as_attachment=True, download_name="texto.pdf")
 
 
+# Página generador de CV
+@app.route("/cv")
+def cv():
+    return render_template("cv.html")
+
+
+# Generar CV en PDF
+@app.route("/generar-cv", methods=["POST"])
+def generar_cv():
+    nombre = request.form.get("nombre", "")
+    profesion = request.form.get("profesion", "")
+    experiencia = request.form.get("experiencia", "")
+    habilidades = request.form.get("habilidades", "")
+
+    buffer = io.BytesIO()
+    pdf = canvas.Canvas(buffer)
+
+    y = 750
+
+    pdf.drawString(100, y, f"Nombre: {nombre}")
+    y -= 30
+
+    pdf.drawString(100, y, f"Profesión: {profesion}")
+    y -= 40
+
+    pdf.drawString(100, y, "Experiencia:")
+    y -= 20
+
+    for linea in experiencia.split("\n"):
+        pdf.drawString(120, y, linea)
+        y -= 20
+
+    y -= 20
+    pdf.drawString(100, y, "Habilidades:")
+    y -= 20
+
+    for linea in habilidades.split("\n"):
+        pdf.drawString(120, y, linea)
+        y -= 20
+
+    pdf.save()
+
+    buffer.seek(0)
+
+    return send_file(buffer, as_attachment=True, download_name="cv.pdf")
+
+
 if __name__ == "__main__":
     app.run(debug=True)
