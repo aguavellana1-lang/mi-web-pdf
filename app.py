@@ -4,43 +4,22 @@ import io
 
 app = Flask(__name__)
 
-# Página principal
+# PAGINA PRINCIPAL
 @app.route("/")
-def index():
+def home():
     return render_template("index.html")
 
 
-# Generar PDF desde formulario principal
-@app.route("/generar", methods=["POST"])
-def generar_pdf():
-    nombre = request.form.get("nombre", "")
-    empresa = request.form.get("empresa", "")
-    mensaje = request.form.get("mensaje", "")
-
-    buffer = io.BytesIO()
-    pdf = canvas.Canvas(buffer)
-
-    pdf.drawString(100, 750, f"Nombre: {nombre}")
-    pdf.drawString(100, 730, f"Empresa: {empresa}")
-    pdf.drawString(100, 710, f"Mensaje: {mensaje}")
-
-    pdf.save()
-
-    buffer.seek(0)
-
-    return send_file(buffer, as_attachment=True, download_name="documento.pdf")
-
-
-# Página texto → PDF
+# TEXTO A PDF
 @app.route("/texto")
 def texto():
     return render_template("texto_pdf.html")
 
 
-# Generar PDF desde texto
-@app.route("/texto-pdf", methods=["POST"])
-def texto_pdf():
-    texto = request.form.get("texto", "")
+@app.route("/generar_pdf", methods=["POST"])
+def generar_pdf():
+
+    texto = request.form["texto"]
 
     buffer = io.BytesIO()
     pdf = canvas.Canvas(buffer)
@@ -51,58 +30,88 @@ def texto_pdf():
         y -= 20
 
     pdf.save()
-
     buffer.seek(0)
 
-    return send_file(buffer, as_attachment=True, download_name="texto.pdf")
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="texto.pdf",
+        mimetype="application/pdf"
+    )
 
 
-# Página generador de CV
+# CV EN PDF
 @app.route("/cv")
 def cv():
     return render_template("cv.html")
 
 
-# Generar CV en PDF
-@app.route("/generar-cv", methods=["POST"])
+@app.route("/generar_cv", methods=["POST"])
 def generar_cv():
-    nombre = request.form.get("nombre", "")
-    profesion = request.form.get("profesion", "")
-    experiencia = request.form.get("experiencia", "")
-    habilidades = request.form.get("habilidades", "")
+
+    nombre = request.form["nombre"]
+    email = request.form["email"]
+    experiencia = request.form["experiencia"]
 
     buffer = io.BytesIO()
     pdf = canvas.Canvas(buffer)
 
-    y = 750
+    pdf.setFont("Helvetica-Bold", 18)
+    pdf.drawString(100, 750, nombre)
 
-    pdf.drawString(100, y, f"Nombre: {nombre}")
-    y -= 30
+    pdf.setFont("Helvetica", 12)
+    pdf.drawString(100, 710, f"Email: {email}")
 
-    pdf.drawString(100, y, f"Profesión: {profesion}")
-    y -= 40
-
-    pdf.drawString(100, y, "Experiencia:")
-    y -= 20
-
+    y = 670
     for linea in experiencia.split("\n"):
-        pdf.drawString(120, y, linea)
-        y -= 20
-
-    y -= 20
-    pdf.drawString(100, y, "Habilidades:")
-    y -= 20
-
-    for linea in habilidades.split("\n"):
-        pdf.drawString(120, y, linea)
+        pdf.drawString(100, y, linea)
         y -= 20
 
     pdf.save()
-
     buffer.seek(0)
 
-    return send_file(buffer, as_attachment=True, download_name="cv.pdf")
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="cv.pdf",
+        mimetype="application/pdf"
+    )
+
+
+# FACTURA EN PDF
+@app.route("/factura")
+def factura():
+    return render_template("factura.html")
+
+
+@app.route("/generar_factura", methods=["POST"])
+def generar_factura():
+
+    cliente = request.form["cliente"]
+    producto = request.form["producto"]
+    precio = request.form["precio"]
+
+    buffer = io.BytesIO()
+    pdf = canvas.Canvas(buffer)
+
+    pdf.setFont("Helvetica-Bold", 18)
+    pdf.drawString(100, 750, "Factura")
+
+    pdf.setFont("Helvetica", 12)
+    pdf.drawString(100, 710, f"Cliente: {cliente}")
+    pdf.drawString(100, 680, f"Producto: {producto}")
+    pdf.drawString(100, 650, f"Precio: {precio}")
+
+    pdf.save()
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="factura.pdf",
+        mimetype="application/pdf"
+    )
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
