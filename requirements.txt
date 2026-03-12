@@ -3,3 +3,4 @@ reportlab
 pillow
 PyPDF2
 pdf2image
+gunicorn
