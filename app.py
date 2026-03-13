@@ -198,3 +198,37 @@ def comprimir_pdf():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+@app.route("/convertir_texto_pdf")
+def convertir_texto_pdf():
+    return render_template("convertir_texto_pdf.html")
+
+
+@app.route("/texto")
+def texto():
+    return render_template("texto.html")
+
+
+@app.route("/notas")
+def notas():
+    return render_template("notas.html")
+
+
+@app.route("/tareas")
+def tareas():
+    return render_template("tareas.html")
+
+
+@app.route("/cv")
+def cv():
+    return render_template("cv.html")
+
+
+@app.route("/factura")
+def factura():
+    return render_template("factura.html")
+
+
+@app.route("/agenda")
+def agenda():
+    return render_template("agenda.html")
