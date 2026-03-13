@@ -1,150 +1,107 @@
 from flask import Flask, render_template, request, send_file
-from reportlab.pdfgen import canvas
-import io
-from PIL import Image
 from PyPDF2 import PdfMerger, PdfReader, PdfWriter
+from PIL import Image
+from pdf2image import convert_from_bytes
+import io
 
 app = Flask(__name__)
 
-# HOME
+
 @app.route("/")
-def home():
+def index():
     return render_template("index.html")
 
 
-# TEXTO → PDF
-@app.route("/texto")
-def texto():
-    return render_template("texto_pdf.html")
-
-@app.route("/generar_pdf", methods=["POST"])
-def generar_pdf():
-
-    texto = request.form["texto"]
-
-    buffer = io.BytesIO()
-    pdf = canvas.Canvas(buffer)
-
-    y = 750
-    for linea in texto.split("\n"):
-        pdf.drawString(100, y, linea)
-        y -= 20
-
-    pdf.save()
-    buffer.seek(0)
-
-    return send_file(buffer, as_attachment=True, download_name="texto.pdf", mimetype="application/pdf")
-
-
-# CV
-@app.route("/cv")
-def cv():
-    return render_template("cv.html")
-
-
-# FACTURA
-@app.route("/factura")
-def factura():
-    return render_template("factura.html")
-
-
-# NOTAS
-@app.route("/notas")
-def notas():
-    return render_template("notas.html")
-
-
-# TAREAS
-@app.route("/tareas")
-def tareas():
-    return render_template("tareas.html")
-
-
-# AGENDA
-@app.route("/agenda")
-def agenda():
-    return render_template("agenda.html")
-
-
 # UNIR PDF
-@app.route("/unir-pdf")
+@app.route("/unir-pdf", methods=["GET","POST"])
 def unir_pdf():
+
+    if request.method == "POST":
+
+        archivos = request.files.getlist("pdfs")
+
+        merger = PdfMerger()
+
+        for pdf in archivos:
+            merger.append(pdf)
+
+        salida = "unido.pdf"
+        merger.write(salida)
+        merger.close()
+
+        return send_file(salida, as_attachment=True)
+
     return render_template("unir_pdf.html")
-
-@app.route("/procesar_unir_pdf", methods=["POST"])
-def procesar_unir_pdf():
-
-    archivos = request.files.getlist("pdfs")
-
-    merger = PdfMerger()
-
-    for archivo in archivos:
-        merger.append(archivo)
-
-    buffer = io.BytesIO()
-    merger.write(buffer)
-    merger.close()
-
-    buffer.seek(0)
-
-    return send_file(buffer, as_attachment=True, download_name="unidos.pdf", mimetype="application/pdf")
 
 
 # DIVIDIR PDF
-@app.route("/dividir-pdf")
+@app.route("/dividir-pdf", methods=["GET","POST"])
 def dividir_pdf():
+
+    if request.method == "POST":
+
+        archivo = request.files["pdf"]
+        pagina = int(request.form["pagina"])
+
+        reader = PdfReader(archivo)
+        writer = PdfWriter()
+
+        writer.add_page(reader.pages[pagina-1])
+
+        salida = "pagina.pdf"
+
+        with open(salida,"wb") as f:
+            writer.write(f)
+
+        return send_file(salida, as_attachment=True)
+
     return render_template("dividir_pdf.html")
 
-@app.route("/procesar_dividir_pdf", methods=["POST"])
-def procesar_dividir_pdf():
 
-    archivo = request.files["pdf"]
+# IMAGEN A PDF
+@app.route("/imagen-pdf", methods=["GET","POST"])
+def imagen_pdf():
 
-    reader = PdfReader(archivo)
-    writer = PdfWriter()
+    if request.method == "POST":
 
-    writer.add_page(reader.pages[0])
+        archivo = request.files["imagen"]
 
-    buffer = io.BytesIO()
-    writer.write(buffer)
+        imagen = Image.open(archivo).convert("RGB")
 
-    buffer.seek(0)
+        salida = "imagen.pdf"
 
-    return send_file(buffer, as_attachment=True, download_name="pagina1.pdf", mimetype="application/pdf")
+        imagen.save(salida)
 
+        return send_file(salida, as_attachment=True)
 
-# IMAGEN → PDF
-@app.route("/imagen-a-pdf")
-def imagen_a_pdf():
     return render_template("imagen_pdf.html")
 
-@app.route("/procesar_imagen_pdf", methods=["POST"])
-def procesar_imagen_pdf():
 
-    imagen = request.files["imagen"]
+# PDF A IMAGEN
+@app.route("/pdf-imagen", methods=["GET","POST"])
+def pdf_imagen():
 
-    img = Image.open(imagen)
+    if request.method == "POST":
 
-    buffer = io.BytesIO()
-    img.convert("RGB").save(buffer, format="PDF")
+        archivo = request.files["pdf"]
 
-    buffer.seek(0)
+        paginas = convert_from_bytes(archivo.read())
 
-    return send_file(buffer, as_attachment=True, download_name="imagen.pdf", mimetype="application/pdf")
+        imagen = paginas[0]
 
+        buffer = io.BytesIO()
+        imagen.save(buffer, format="PNG")
+        buffer.seek(0)
 
-# PDF → IMAGEN (simulado simple)
-@app.route("/pdf-a-imagen")
-def pdf_a_imagen():
+        return send_file(
+            buffer,
+            mimetype="image/png",
+            as_attachment=True,
+            download_name="pagina.png"
+        )
+
     return render_template("pdf_imagen.html")
-
-@app.route("/procesar_pdf_imagen", methods=["POST"])
-def procesar_pdf_imagen():
-
-    pdf = request.files["pdf"]
-
-    return "Herramienta en desarrollo"
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
