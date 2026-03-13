@@ -1,107 +1,200 @@
 from flask import Flask, render_template, request, send_file
-from PyPDF2 import PdfMerger, PdfReader, PdfWriter
-from PIL import Image
+import PyPDF2
 from pdf2image import convert_from_bytes
+from PIL import Image
 import io
 
 app = Flask(__name__)
 
-
+# HOME
 @app.route("/")
 def index():
     return render_template("index.html")
 
-
+# =============================
 # UNIR PDF
-@app.route("/unir-pdf", methods=["GET","POST"])
+# =============================
+
+@app.route("/unir_pdf", methods=["GET","POST"])
 def unir_pdf():
 
     if request.method == "POST":
 
-        archivos = request.files.getlist("pdfs")
+        files = request.files.getlist("pdfs")
 
-        merger = PdfMerger()
+        merger = PyPDF2.PdfMerger()
 
-        for pdf in archivos:
-            merger.append(pdf)
+        for file in files:
+            merger.append(file)
 
-        salida = "unido.pdf"
-        merger.write(salida)
+        output = io.BytesIO()
+        merger.write(output)
         merger.close()
 
-        return send_file(salida, as_attachment=True)
+        output.seek(0)
+
+        return send_file(
+            output,
+            download_name="unido.pdf",
+            as_attachment=True
+        )
 
     return render_template("unir_pdf.html")
 
-
+# =============================
 # DIVIDIR PDF
-@app.route("/dividir-pdf", methods=["GET","POST"])
+# =============================
+
+@app.route("/dividir_pdf", methods=["GET","POST"])
 def dividir_pdf():
 
     if request.method == "POST":
 
-        archivo = request.files["pdf"]
-        pagina = int(request.form["pagina"])
+        file = request.files["pdf"]
 
-        reader = PdfReader(archivo)
-        writer = PdfWriter()
+        reader = PyPDF2.PdfReader(file)
 
-        writer.add_page(reader.pages[pagina-1])
+        writer = PyPDF2.PdfWriter()
 
-        salida = "pagina.pdf"
+        page_number = int(request.form["pagina"])
 
-        with open(salida,"wb") as f:
-            writer.write(f)
+        writer.add_page(reader.pages[page_number])
 
-        return send_file(salida, as_attachment=True)
+        output = io.BytesIO()
+
+        writer.write(output)
+
+        output.seek(0)
+
+        return send_file(
+            output,
+            download_name="pagina.pdf",
+            as_attachment=True
+        )
 
     return render_template("dividir_pdf.html")
 
+# =============================
+# PDF → IMAGEN
+# =============================
 
-# IMAGEN A PDF
-@app.route("/imagen-pdf", methods=["GET","POST"])
-def imagen_pdf():
-
-    if request.method == "POST":
-
-        archivo = request.files["imagen"]
-
-        imagen = Image.open(archivo).convert("RGB")
-
-        salida = "imagen.pdf"
-
-        imagen.save(salida)
-
-        return send_file(salida, as_attachment=True)
-
-    return render_template("imagen_pdf.html")
-
-
-# PDF A IMAGEN
-@app.route("/pdf-imagen", methods=["GET","POST"])
+@app.route("/pdf_imagen", methods=["GET","POST"])
 def pdf_imagen():
 
     if request.method == "POST":
 
-        archivo = request.files["pdf"]
+        file = request.files["pdf"]
 
-        paginas = convert_from_bytes(archivo.read())
+        images = convert_from_bytes(file.read())
 
-        imagen = paginas[0]
+        img_io = io.BytesIO()
 
-        buffer = io.BytesIO()
-        imagen.save(buffer, format="PNG")
-        buffer.seek(0)
+        images[0].save(img_io, format="PNG")
+
+        img_io.seek(0)
 
         return send_file(
-            buffer,
-            mimetype="image/png",
-            as_attachment=True,
-            download_name="pagina.png"
+            img_io,
+            download_name="pagina.png",
+            as_attachment=True
         )
 
     return render_template("pdf_imagen.html")
 
+# =============================
+# IMAGEN → PDF
+# =============================
+
+@app.route("/imagen_pdf", methods=["GET","POST"])
+def imagen_pdf():
+
+    if request.method == "POST":
+
+        file = request.files["imagen"]
+
+        image = Image.open(file)
+
+        pdf_io = io.BytesIO()
+
+        image.convert("RGB").save(pdf_io, format="PDF")
+
+        pdf_io.seek(0)
+
+        return send_file(
+            pdf_io,
+            download_name="imagen.pdf",
+            as_attachment=True
+        )
+
+    return render_template("imagen_pdf.html")
+
+# =============================
+# ROTAR PDF
+# =============================
+
+@app.route("/rotar_pdf", methods=["GET","POST"])
+def rotar_pdf():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+
+        reader = PyPDF2.PdfReader(file)
+
+        writer = PyPDF2.PdfWriter()
+
+        for page in reader.pages:
+            page.rotate(90)
+            writer.add_page(page)
+
+        output = io.BytesIO()
+
+        writer.write(output)
+
+        output.seek(0)
+
+        return send_file(
+            output,
+            download_name="rotado.pdf",
+            as_attachment=True
+        )
+
+    return render_template("rotar_pdf.html")
+
+# =============================
+# COMPRIMIR / REDUCIR
+# =============================
+
+@app.route("/comprimir_pdf", methods=["GET","POST"])
+def comprimir_pdf():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+
+        reader = PyPDF2.PdfReader(file)
+
+        writer = PyPDF2.PdfWriter()
+
+        for page in reader.pages:
+            page.compress_content_streams()
+            writer.add_page(page)
+
+        output = io.BytesIO()
+
+        writer.write(output)
+
+        output.seek(0)
+
+        return send_file(
+            output,
+            download_name="comprimido.pdf",
+            as_attachment=True
+        )
+
+    return render_template("comprimir_pdf.html")
+
+# =============================
 
 if __name__ == "__main__":
     app.run(debug=True)
