@@ -1,6 +1,5 @@
 flask
-reportlab
-pillow
-PyPDF2
-pdf2image
 gunicorn
+PyPDF2
+Pillow
+pdf2image
