@@ -1,145 +1,133 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
 <meta charset="UTF-8">
-
-<title>Herramientas PDF Gratis | Crear y Convertir PDF Online</title>
-
-<meta name="description" content="Herramientas gratuitas para crear y convertir PDFs online: texto a PDF, unir PDF, dividir PDF, imagen a PDF y más.">
+<title>PDF Tools</title>
 
 <style>
 
 body{
-font-family:Arial, Helvetica, sans-serif;
-background:#f2f4f7;
+font-family: Arial;
+background:#f4f6fb;
 margin:0;
 }
 
 header{
-background:#0d6efd;
+background:#4f46e5;
 color:white;
-padding:20px;
+padding:30px;
 text-align:center;
 }
 
 .container{
-max-width:1000px;
+max-width:1100px;
 margin:auto;
-padding:40px;
+padding:40px 20px;
 }
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
 gap:20px;
 }
 
-.tool{
+.card{
 background:white;
 padding:25px;
 border-radius:10px;
 box-shadow:0 4px 10px rgba(0,0,0,0.08);
-text-align:center;
+transition:0.2s;
 }
 
-.tool h3{
+.card:hover{
+transform:translateY(-5px);
+}
+
+.card h3{
 margin-top:0;
 }
 
-.tool a{
+.btn{
 display:inline-block;
 margin-top:10px;
-padding:10px 15px;
-background:#0d6efd;
+padding:8px 14px;
+background:#4f46e5;
 color:white;
 text-decoration:none;
-border-radius:5px;
-}
-
-.tool a:hover{
-background:#0b5ed7;
-}
-
-footer{
-text-align:center;
-padding:20px;
-margin-top:40px;
-color:#666;
+border-radius:6px;
 }
 
 </style>
-
 </head>
 
 <body>
 
 <header>
-<h1>Herramientas PDF Gratis</h1>
-<p>Crea, convierte y organiza archivos PDF online</p>
+<h1>📄 PDF & Productivity Tools</h1>
+<p>Herramientas simples para trabajar con PDF</p>
 </header>
 
 <div class="container">
 
 <div class="grid">
 
-<div class="tool">
-<h3>Texto a PDF</h3>
-<a href="/texto">Usar herramienta</a>
+<div class="card">
+<h3>Unir PDF</h3>
+<a class="btn" href="/unir_pdf">Abrir</a>
 </div>
 
-<div class="tool">
-<h3>Crear CV PDF</h3>
-<a href="/cv">Usar herramienta</a>
-</div>
-
-<div class="tool">
-<h3>Crear Factura PDF</h3>
-<a href="/factura">Usar herramienta</a>
-</div>
-
-<div class="tool">
-<h3>Notas a PDF</h3>
-<a href="/notas">Usar herramienta</a>
-</div>
-
-<div class="tool">
-<h3>Lista de tareas</h3>
-<a href="/tareas">Usar herramienta</a>
-</div>
-
-<div class="tool">
-<h3>Agenda PDF</h3>
-<a href="/agenda">Usar herramienta</a>
-</div>
-
-<div class="tool">
-<h3>Unir PDFs</h3>
-<a href="/unir-pdf">Usar herramienta</a>
-</div>
-
-<div class="tool">
+<div class="card">
 <h3>Dividir PDF</h3>
-<a href="/dividir-pdf">Usar herramienta</a>
+<a class="btn" href="/dividir_pdf">Abrir</a>
 </div>
 
-<div class="tool">
-<h3>Imagen a PDF</h3>
-<a href="/imagen-a-pdf">Usar herramienta</a>
-</div>
-
-<div class="tool">
+<div class="card">
 <h3>PDF a Imagen</h3>
-<a href="/pdf-a-imagen">Usar herramienta</a>
+<a class="btn" href="/pdf_imagen">Abrir</a>
+</div>
+
+<div class="card">
+<h3>Imagen a PDF</h3>
+<a class="btn" href="/imagen_pdf">Abrir</a>
+</div>
+
+<div class="card">
+<h3>Texto a PDF</h3>
+<a class="btn" href="/convertir_texto_pdf">Abrir</a>
+</div>
+
+<div class="card">
+<h3>Editor de Texto</h3>
+<a class="btn" href="/texto">Abrir</a>
+</div>
+
+<div class="card">
+<h3>Notas</h3>
+<a class="btn" href="/notas">Abrir</a>
+</div>
+
+<div class="card">
+<h3>Lista de Tareas</h3>
+<a class="btn" href="/tareas">Abrir</a>
+</div>
+
+<div class="card">
+<h3>Generador de CV</h3>
+<a class="btn" href="/cv">Abrir</a>
+</div>
+
+<div class="card">
+<h3>Generador de Factura</h3>
+<a class="btn" href="/factura">Abrir</a>
+</div>
+
+<div class="card">
+<h3>Agenda</h3>
+<a class="btn" href="/agenda">Abrir</a>
 </div>
 
 </div>
-
 </div>
-
-<footer>
-<p>Herramientas PDF gratuitas online</p>
-</footer>
 
 </body>
 </html>
