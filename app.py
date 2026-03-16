@@ -228,6 +228,32 @@ def cv():
 def factura():
     return render_template("factura.html")
 
+@app.route("/rotar_pdf", methods=["GET","POST"])
+def rotar_pdf():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+
+        reader = PyPDF2.PdfReader(file)
+        writer = PyPDF2.PdfWriter()
+
+        for page in reader.pages:
+            page.rotate(90)
+            writer.add_page(page)
+
+        import io
+        output = io.BytesIO()
+        writer.write(output)
+        output.seek(0)
+
+        return send_file(
+            output,
+            download_name="rotado.pdf",
+            as_attachment=True
+        )
+
+    return render_template("rotar_pdf.html")
 
 @app.route("/agenda")
 def agenda():
