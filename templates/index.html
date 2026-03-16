@@ -1,75 +1,134 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>PDF Tools</title>
 
 <style>
 
-body{
-font-family: Arial;
-background:#f4f6fb;
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+background:#f4f6fb;
 }
 
 header{
-background:#4f46e5;
+background:linear-gradient(135deg,#5b5be6,#3b3bbf);
 color:white;
-padding:30px;
 text-align:center;
+padding:40px 20px;
+}
+
+header h1{
+font-size:32px;
+margin-bottom:10px;
+}
+
+header p{
+opacity:0.9;
 }
 
 .container{
-max-width:1100px;
+max-width:1200px;
 margin:auto;
 padding:40px 20px;
 }
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-gap:20px;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:25px;
 }
 
 .card{
+
 background:white;
-padding:25px;
-border-radius:10px;
-box-shadow:0 4px 10px rgba(0,0,0,0.08);
-transition:0.2s;
+border-radius:12px;
+padding:30px 20px;
+
+box-shadow:0 6px 15px rgba(0,0,0,0.08);
+
+transition:0.25s;
+
+text-align:center;
 }
 
 .card:hover{
-transform:translateY(-5px);
+
+transform:translateY(-6px);
+
+box-shadow:0 12px 25px rgba(0,0,0,0.15);
+
 }
 
 .card h3{
-margin-top:0;
+margin-bottom:20px;
 }
 
 .btn{
+
 display:inline-block;
-margin-top:10px;
-padding:8px 14px;
-background:#4f46e5;
+
+padding:10px 18px;
+
+background:#5b5be6;
+
 color:white;
+
 text-decoration:none;
-border-radius:6px;
+
+border-radius:8px;
+
+font-size:14px;
+
+transition:0.2s;
+
+}
+
+.btn:hover{
+
+background:#3b3bbf;
+
+}
+
+footer{
+
+text-align:center;
+
+padding:30px;
+
+color:#666;
+
 }
 
 </style>
+
 </head>
 
 <body>
 
 <header>
+
 <h1>📄 PDF & Productivity Tools</h1>
-<p>Herramientas simples para trabajar con PDF</p>
+
+<p>Herramientas gratuitas para trabajar con PDF y productividad</p>
+
 </header>
+
 
 <div class="container">
 
 <div class="grid">
+
 
 <div class="card">
 <h3>Unir PDF</h3>
@@ -89,6 +148,11 @@ border-radius:6px;
 <div class="card">
 <h3>Imagen a PDF</h3>
 <a class="btn" href="/imagen_pdf">Abrir</a>
+</div>
+
+<div class="card">
+<h3>Rotar PDF</h3>
+<a class="btn" href="/rotar_pdf">Abrir</a>
 </div>
 
 <div class="card">
@@ -127,7 +191,17 @@ border-radius:6px;
 </div>
 
 </div>
+
 </div>
 
+
+<footer>
+
+<p>Micro SaaS Project</p>
+
+</footer>
+
+
 </body>
+
 </html>
